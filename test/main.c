@@ -1,19 +1,20 @@
 #include <jastime/jastime.h>
 #include <jasio/jasio.h>
 #include <stdio.h>
-#include <unistd.h>
-
+#include <stdlib.h>
 struct jasio jasio;
 
 void puts_(int timerfd, void *str, enum jastime_status status)
 {
-	static int i = 0;
-	printf("i: %d\n", i);
-	if (i++ > 10) {
-		jastime_remove(&jasio, timerfd);
-		return;
-	}
 	puts((const char *)str);
+}
+
+void close(int timerfd, void *data, enum jastime_status status)
+{
+	int *fds = data;
+	jastime_remove(&jasio, fds[0]);
+	jastime_remove(&jasio, fds[1]);
+	jastime_remove(&jasio, timerfd);
 }
 
 int main()
@@ -28,8 +29,16 @@ int main()
 	two_sec.data = "every 2 seconds";
 	two_sec.func = puts_;
 
-	jastime_every(&jasio, jastime_seconds(1), sec);
-	jastime_every(&jasio, jastime_seconds(2), two_sec);
+	int one_sec_fd = jastime_every(&jasio, jastime_seconds(1), sec);
+	int two_sec_fd = jastime_every(&jasio, jastime_seconds(2), two_sec);
+
+	int *fds = malloc(sizeof(int) * 2);
+	fds[0] = one_sec_fd;
+	fds[1] = two_sec_fd;
+	struct jastime_continuation ten_sec;
+	ten_sec.data = fds;
+	ten_sec.func = close;
+	jastime_after(&jasio, jastime_seconds(10), ten_sec);
 
 	jasio_run(&jasio, -1);
 }

@@ -10,8 +10,8 @@ void after_continuation_func(int fd, void *data, enum jasio_events events)
 	struct jastime_continuation *cont = data;
 	(*cont->func)(fd, cont->data, (enum jastime_status)events);
 }
-void jastime_after(struct jasio *jasio, long long nsec,
-		   struct jastime_continuation continuation)
+int jastime_after(struct jasio *jasio, long long nsec,
+		  struct jastime_continuation continuation)
 {
 	struct itimerspec s;
 	s.it_value.tv_nsec = nsec % 1000000;
@@ -30,6 +30,7 @@ void jastime_after(struct jasio *jasio, long long nsec,
 	io_continuation.func = after_continuation_func;
 
 	jasio_add(jasio, fd, JASIO_IN, io_continuation);
+	return fd;
 }
 
 void every_continuation_func(int fd, void *data, enum jasio_events events)
@@ -46,8 +47,8 @@ void every_continuation_func(int fd, void *data, enum jasio_events events)
 	(*cont->func)(fd, cont->data, (enum jastime_status)events);
 }
 
-void jastime_every_after(struct jasio *jasio, long long first, long long every,
-			 struct jastime_continuation continuation)
+int jastime_every_after(struct jasio *jasio, long long first, long long every,
+			struct jastime_continuation continuation)
 {
 	struct itimerspec s;
 
@@ -67,16 +68,17 @@ void jastime_every_after(struct jasio *jasio, long long first, long long every,
 	io_continuation.func = every_continuation_func;
 
 	jasio_add(jasio, fd, JASIO_IN, io_continuation);
+	return fd;
 }
 
-void jastime_every(struct jasio *jasio, long long every,
-		   struct jastime_continuation contiunation)
+int jastime_every(struct jasio *jasio, long long every,
+		  struct jastime_continuation contiunation)
 {
-	jastime_every_after(jasio, JASTIME_IMMEDIATELY, every, contiunation);
+	return jastime_every_after(jasio, every, every, contiunation);
 }
 
 void jastime_remove(struct jasio *jasio, int timerfd)
 {
-	close(timerfd);
 	jasio_remove(jasio, timerfd);
+	close(timerfd);
 }

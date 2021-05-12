@@ -35,11 +35,11 @@ inline long long jastime_days(long long l)
 }
 #define JASTIME_IMMEDIATELY jastime_nanoseconds(1)
 
-void jastime_after(struct jasio *jasio, long long nsec,
-		   struct jastime_continuation continuation);
-void jastime_every(struct jasio *jasio, long long every,
-		   struct jastime_continuation contiunation);
-void jastime_every_after(struct jasio *jasio, long long after, long long every,
-			 struct jastime_continuation continuation);
+int jastime_after(struct jasio *jasio, long long nsec,
+		  struct jastime_continuation continuation);
+int jastime_every(struct jasio *jasio, long long every,
+		  struct jastime_continuation contiunation);
+int jastime_every_after(struct jasio *jasio, long long after, long long every,
+			struct jastime_continuation continuation);
 
 void jastime_remove(struct jasio *jasio, int timerfd);
