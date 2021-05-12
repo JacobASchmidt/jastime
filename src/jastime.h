@@ -3,6 +3,8 @@ enum jastime_status {
 	JASTIME_OK = JASIO_IN,
 	JASTIME_ERR = JASIO_ERR,
 };
+
+#define JASTIME_EVENTS JASIO_IN
 struct jastime_continuation {
 	void (*func)(int timer_fd, void *data, enum jastime_status status);
 	void *data;
@@ -35,11 +37,19 @@ inline long long jastime_days(long long l)
 }
 #define JASTIME_IMMEDIATELY jastime_nanoseconds(1)
 
-int jastime_after(struct jasio *jasio, long long nsec,
-		  struct jastime_continuation continuation);
-int jastime_every(struct jasio *jasio, long long every,
-		  struct jastime_continuation contiunation);
-int jastime_every_after(struct jasio *jasio, long long after, long long every,
-			struct jastime_continuation continuation);
+struct jastime {
+	int fd;
+	struct jasio_continuation contiunation;
+};
+struct jastime jastime_after(long long nsec,
+			     struct jastime_continuation continuation);
+struct jastime jastime_every(long long every,
+			     struct jastime_continuation contiunation);
+struct jastime jastime_every_after(long long first, long long every,
+				   struct jastime_continuation continuation);
 
-void jastime_remove(struct jasio *jasio, int timerfd);
+inline int jastime_add(struct jasio *jasio, struct jastime jastime)
+{
+	return jasio_add(jasio, jastime.fd, JASTIME_EVENTS,
+			 jastime.contiunation);
+}
