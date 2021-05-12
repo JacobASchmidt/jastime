@@ -7,8 +7,6 @@ struct jasio jasio;
 
 void puts_(int timerfd, void *str, enum jastime_status status)
 {
-	printf("howdy");
-	fflush(stdout);
 	puts((const char *)str);
 }
 
@@ -19,8 +17,6 @@ void _close(int timerfd, void *data, enum jastime_status status)
 	close(jastimes[1].fd);
 	close(timerfd);
 	free(data);
-	free(jastimes[0].contiunation.data);
-	free(jastimes[1].contiunation.data);
 }
 
 int main()
