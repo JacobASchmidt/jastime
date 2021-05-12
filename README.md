@@ -18,7 +18,7 @@ int main()
 	two_sec.data = "every 2 seconds";
 	two_sec.func = puts_;
 
-	jastime_add(&jasio, jastime_every(jastime_seconds(1), sec));//will print "every second" every second
+	jastime_add(&jasio, jastime_every(jastime_seconds(1), sec)); //will print "every second" every second
 
 	jastime_add(&jasio, jastime_every(jastime_seconds(2), two_sec)); //will print "every two seconds" every two seconds
 
