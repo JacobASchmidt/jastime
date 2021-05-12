@@ -43,6 +43,7 @@
 *.pdb
 #asm
 *.s
+#test main
 
 # Kernel Module Compile Results
 *.mod*
