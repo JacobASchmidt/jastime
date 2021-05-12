@@ -44,7 +44,7 @@
 #asm
 *.s
 #test main
-
+test/main
 # Kernel Module Compile Results
 *.mod*
 *.cmd
