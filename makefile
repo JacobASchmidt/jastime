@@ -3,13 +3,15 @@ FLAGS=-O3 -Wall -Wextra -Idep/include
 SRC=src
 OBJ=obj
 ASM=asm
+TEST=test/main.c
 SRCS=$(wildcard $(SRC)/*.c)
 OBJS=$(patsubst $(SRC)/%.c, $(OBJ)/%.o, $(SRCS))
 ASMS=$(patsubst $(SRC)/%.c, $(ASM)/%.s, $(SRCS))
 BINDIR=lib
-BIN=$(BINDIR)/libjaspdb.a
+BIN=$(BINDIR)/libjastime.a
 
 all: $(BINDIR) $(OBJ) $(ASM) $(BIN) asm
+
 
 $(BINDIR):
 	mkdir $(BINDIR)
@@ -31,10 +33,18 @@ clean:
 	rm -r $(BINDIR)/* $(OBJ)/* $(ASM)/* 
 	rmdir asm lib obj
 
-install: $(BIN)
-	sudo cp src/continuation.h /usr/local/lib/
-	sudo cp src/fdmap.h /usr/local/lib/
-	sudo cp src/jasio.h /usr/local/lib/
+/usr/local/include/jastime:
+	mkdir /usr/local/include/jastime
+	
+install: $(BIN) /usr/local/include/jastime
+	sudo cp src/jastime.h /usr/local/include/jastime/
 	sudo cp lib/* /usr/local/lib
 run: $(BIN)
 	./$(BIN)
+
+
+
+test: FORCE
+	$(CC) $(FLAGS) $(TEST) -o test/main -ljasio -ljastime
+	./test/main
+FORCE: ;
