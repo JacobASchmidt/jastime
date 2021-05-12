@@ -6,6 +6,11 @@ jastime is a small extension of jasio that allows for async timers.
 ```c
 struct jasio jasio;
 
+void puts_(int timerfd, void *str, enum jastime_status status)
+{
+	puts((const char *)str);
+}
+
 int main()
 {
 	jasio_create(&jasio, 10);
