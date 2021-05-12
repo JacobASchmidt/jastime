@@ -12,10 +12,13 @@ void puts_(int timerfd, void *str, enum jastime_status status)
 
 void _close(int timerfd, void *data, enum jastime_status status)
 {
-	int *fds = data;
-	close(fds[0]);
-	close(fds[1]);
+	struct jastime *jastimes = data;
+	close(jastimes[0].fd);
+	close(jastimes[1].fd);
 	close(timerfd);
+	free(data);
+	free(jastimes[0].contiunation.data);
+	free(jastimes[1].contiunation.data);
 }
 
 int main()
@@ -30,19 +33,19 @@ int main()
 	two_sec.data = "every 2 seconds";
 	two_sec.func = puts_;
 
-	struct jastime jastime_sec = jastime_every(jastime_seconds(2), sec);
+	struct jastime jastime_sec = jastime_every(jastime_seconds(1), sec);
 	jastime_add(&jasio, jastime_sec);
 
 	struct jastime jastime_two_sec =
 		jastime_every(jastime_seconds(2), two_sec);
 	jastime_add(&jasio, jastime_two_sec);
 
-	int *fds = malloc(sizeof(int) * 2);
-	fds[0] = jastime_sec.fd;
-	fds[1] = jastime_two_sec.fd;
+	struct jastime *jastimes = malloc(sizeof(*jastimes) * 2);
+	jastimes[0] = jastime_sec;
+	jastimes[1] = jastime_two_sec;
 
 	struct jastime_continuation ten_sec;
-	ten_sec.data = fds;
+	ten_sec.data = jastimes;
 	ten_sec.func = _close;
 
 	jastime_add(&jasio, jastime_after(jastime_seconds(10), ten_sec));
