@@ -9,33 +9,15 @@ struct jastime_continuation {
 	void (*func)(int timer_fd, void *data, enum jastime_status status);
 	void *data;
 };
+enum { jastime_nanosecond = 1LL,
+       jastime_millisecond = 1000LL * jastime_nanosecond,
+       jastime_second = 1000LL * jastime_millisecond,
+       jastime_minute = 60LL * jastime_second,
 
-inline long long jastime_nanoseconds(long long l)
-{
-	return l;
-}
-inline long long jastime_milliseconds(long long l)
-{
-	return l * 1000;
-}
-inline long long jastime_seconds(long long l)
-{
-	return jastime_milliseconds(l) * 1000;
-}
-
-inline long long jastime_minutes(long long l)
-{
-	return jastime_seconds(l) * 60;
-}
-inline long long jastime_hours(long long l)
-{
-	return jastime_minutes(l) * 60;
-}
-inline long long jastime_days(long long l)
-{
-	return jastime_hours(l) * 24;
-}
-#define JASTIME_IMMEDIATELY jastime_nanoseconds(1)
+       jastime_hour = 60LL * jastime_minute,
+       jastime_day = 24LL * jastime_hour,
+};
+#define JASTIME_IMMEDIATELY jastime_nanosecond
 
 struct jastime {
 	int fd;

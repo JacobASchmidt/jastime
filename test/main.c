@@ -7,6 +7,8 @@ struct jasio jasio;
 
 void puts_(int timerfd, void *str, enum jastime_status status)
 {
+	printf("howdy");
+	fflush(stdout);
 	puts((const char *)str);
 }
 
@@ -33,11 +35,11 @@ int main()
 	two_sec.data = "every 2 seconds";
 	two_sec.func = puts_;
 
-	struct jastime jastime_sec = jastime_every(jastime_seconds(1), sec);
+	struct jastime jastime_sec = jastime_every(jastime_second, sec);
 	jastime_add(&jasio, jastime_sec);
 
 	struct jastime jastime_two_sec =
-		jastime_every(jastime_seconds(2), two_sec);
+		jastime_every(jastime_second * 2, two_sec);
 	jastime_add(&jasio, jastime_two_sec);
 
 	struct jastime *jastimes = malloc(sizeof(*jastimes) * 2);
@@ -48,7 +50,7 @@ int main()
 	ten_sec.data = jastimes;
 	ten_sec.func = _close;
 
-	jastime_add(&jasio, jastime_after(jastime_seconds(10), ten_sec));
+	jastime_add(&jasio, jastime_after(10 * jastime_second, ten_sec));
 
 	jasio_run(&jasio, -1);
 }

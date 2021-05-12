@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
+
 void after_continuation_func(int fd, void *data, enum jasio_events events)
 {
 	struct jastime_continuation *cont = data;
