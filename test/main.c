@@ -35,7 +35,7 @@ int main()
 	jastime_add(&jasio, jastime_sec);
 
 	struct jastime jastime_two_sec =
-		jastime_every(jastime_second * 2, two_sec);
+		jastime_every(jastime_second * 2L, two_sec);
 	jastime_add(&jasio, jastime_two_sec);
 
 	struct jastime *jastimes = malloc(sizeof(*jastimes) * 2);
@@ -46,7 +46,7 @@ int main()
 	ten_sec.data = jastimes;
 	ten_sec.func = _close;
 
-	jastime_add(&jasio, jastime_after(10 * jastime_second, ten_sec));
+	jastime_add(&jasio, jastime_after(10L * jastime_second, ten_sec));
 
 	jasio_run(&jasio, -1);
 }

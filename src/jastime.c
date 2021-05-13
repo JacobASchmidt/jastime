@@ -13,7 +13,7 @@ void after_continuation_func(int fd, void *data, enum jasio_events events)
 	struct jastime_continuation *cont = data;
 	(*cont->func)(fd, cont->data, (enum jastime_status)events);
 }
-#define NANO_SEC_PER_SEC 1000000
+#define NANO_SEC_PER_SEC ((long long)1000000000)
 struct jastime jastime_after(long long nsec,
 			     struct jastime_continuation continuation)
 {
@@ -22,7 +22,7 @@ struct jastime jastime_after(long long nsec,
 	s.it_value.tv_sec = nsec / NANO_SEC_PER_SEC;
 	s.it_interval.tv_nsec = 0;
 	s.it_interval.tv_sec = 0;
-	int fd = timerfd_create(CLOCK_MONOTONIC, TFD_NONBLOCK);
+	int fd = timerfd_create(CLOCK_BOOTTIME, TFD_NONBLOCK);
 	timerfd_settime(fd, 0, &s, NULL);
 
 	struct jastime_continuation *time_continuation =

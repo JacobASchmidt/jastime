@@ -43,8 +43,9 @@
 *.pdb
 #asm
 *.s
-#test main
+#test
 test/main
+test/example
 # Kernel Module Compile Results
 *.mod*
 *.cmd

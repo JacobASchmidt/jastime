@@ -10,7 +10,8 @@ struct jastime_continuation {
 	void *data;
 };
 enum { jastime_nanosecond = 1LL,
-       jastime_millisecond = 1000LL * jastime_nanosecond,
+       jastime_microsecond = 1000LL * jastime_nanosecond,
+       jastime_millisecond = 1000LL * jastime_microsecond,
        jastime_second = 1000LL * jastime_millisecond,
        jastime_minute = 60LL * jastime_second,
 

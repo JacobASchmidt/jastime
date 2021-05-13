@@ -47,4 +47,7 @@ run: $(BIN)
 test: FORCE
 	$(CC) $(FLAGS) $(TEST) -o test/main -ljasio -ljastime
 	./test/main
+example: FORCE 
+	$(CC) $(FLAGS) test/example.c -o test/example -ljasio -ljastime
+	./test/example
 FORCE: ;
